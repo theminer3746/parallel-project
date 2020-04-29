@@ -1,0 +1,41 @@
+import tkinter as tk
+from AppLogic import AppLogic
+import requests
+
+
+class UserPage(tk.Frame):
+
+    def __init__(self, *args, **kwargs):
+        tk.Frame.__init__(self, *args, **kwargs)
+        AppLogic.root.wm_geometry("200x70")
+        self.username_entry = tk.Entry(self)
+        self.password_entry = tk.Entry(self)
+        submit_button = tk.Button(self, text="submit", command=self._on_submit)
+        tk.Label(self, text="username: ").grid(row=0, sticky=tk.W)
+        self.username_entry.grid(row=0, column=1)
+        tk.Label(self, text="password: ").grid(row=1, sticky=tk.W)
+        self.password_entry.grid(row=1, column=1)
+        submit_button.grid(row=2, columnspan=2)
+        self.next_page = None
+        self.user = None
+
+    def _on_submit(self):
+        login_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
+        print("Login as '"+self.username_entry.get()+"'")
+        print("Password is '" + self.password_entry.get() + "'")
+
+        '''
+        response = requests.post(AppLogic.server_ip, data=login_payload)
+        if response.status_code == 200:
+            res = response.json()
+            AppLogic.token = res['token']
+            AppLogic.root.wm_geometry("800x600")
+            self.next_page.lift()
+        '''
+
+        AppLogic.root.wm_geometry("800x600")
+        self.next_page.lift()
+
+    def get_username(self):
+        return self.username_entry.get()
+
