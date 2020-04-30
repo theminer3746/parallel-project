@@ -1,0 +1,11 @@
+ClientParallel/.idea/.gitignore
+ClientParallel/.idea/ClientParallel.iml
+ClientParallel/.idea/misc.xml
+ClientParallel/.idea/modules.xml
+ClientParallel/.idea/vcs.xml
+ClientParallel/.idea/inspectionProfiles/profiles_settings.xml
+ClientParallel/__pycache__/AppLogic.cpython-37.pyc
+ClientParallel/__pycache__/ChatListPage.cpython-37.pyc
+ClientParallel/__pycache__/ChatPage.cpython-37.pyc
+ClientParallel/__pycache__/UserPage.cpython-37.pyc
+ClientParallel/venv/
