@@ -10,6 +10,7 @@ use App\MessageDto;
 class Message extends Model
 {
     private $chat;
+    private $user;
 
     /**
      * The attributes that are mass assignable.
@@ -20,9 +21,17 @@ class Message extends Model
         'message',
     ];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['username'];
+
     public function __construct()
     {
         $this->chat = new Chat;
+        $this->user = new User;
     }
 
     public function chat()
@@ -41,5 +50,10 @@ class Message extends Model
         $this->user_id = $messageDto->userId;
         $this->message = $messageDto->message;
         $this->save();
+    }
+
+    public function getUsernameAttribute()
+    {
+        return $this->user->find($this->user_id)->username;
     }
 }
