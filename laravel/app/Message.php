@@ -9,9 +9,6 @@ use App\MessageDto;
 
 class Message extends Model
 {
-    private $chat;
-    private $user;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -28,11 +25,12 @@ class Message extends Model
      */
     protected $appends = ['username'];
 
-    public function __construct()
-    {
-        $this->chat = new Chat;
-        $this->user = new User;
-    }
+    /**
+     * The storage format of the model's date columns.
+     *
+     * @var string
+     */
+    protected $dateFormat = 'Uv';
 
     public function chat()
     {
@@ -54,6 +52,6 @@ class Message extends Model
 
     public function getUsernameAttribute()
     {
-        return $this->user->find($this->user_id)->username;
+        return $this->user->username;
     }
 }
