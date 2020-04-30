@@ -12,11 +12,17 @@
 |
 */
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => ['api']], function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('login', 'AuthController@login');
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::post('me', 'AuthController@me');
+    });
+
+    Route::group(['prefix' => 'chats'], function () {
+        Route::post('/', 'ChatController@create');
+        Route::post('/join', 'ChatController@join');
+        Route::post('/{chat_id}/messages', 'ChatController@newMessage')->middleware('in_chat');
     });
 });
