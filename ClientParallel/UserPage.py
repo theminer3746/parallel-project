@@ -48,6 +48,8 @@ class UserPage(tk.Frame):
             AppLogic.root.wm_geometry("800x600")
             self.next_page.lift()
 
+
+#register api
     def post_register():
         register_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
         #response = requests.post(AppLogic.server_ip+'login', data=login_payload)
