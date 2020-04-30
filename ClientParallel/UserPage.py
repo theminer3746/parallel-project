@@ -41,7 +41,6 @@ class UserPage(tk.Frame):
             AppLogic.token = res['access_token']
             AppLogic.root.wm_geometry("800x600")
             self.next_page.lift()
-            AppLogic.root.wm_geometry("800x600")
 
 
 #register api
