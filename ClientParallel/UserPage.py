@@ -22,14 +22,8 @@ class UserPage(tk.Frame):
         register_button.grid(row=2, columnspan=1)
 
     def _on_submit(self):
-        print("Login as '"+self.username_entry.get()+"'")
-        print("Password is '" + self.password_entry.get() + "'")
-
-        # self.post_login()
-
-        AppLogic.root.wm_geometry("800x600") # set new display size
-
-        self.next_page.lift()
+          # set new display size
+        self.post_login()
 
     def _on_register(self):
         print("Register complete")
@@ -41,12 +35,13 @@ class UserPage(tk.Frame):
 
     def post_login(self):
         login_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
-        response = requests.post(AppLogic.server_ip+'login', data=login_payload)
+        response = requests.post(AppLogic.server_ip+'auth/login', data=login_payload)
         if response.status_code == 200:
             res = response.json()
-            AppLogic.token = res['token']
+            AppLogic.token = res['access_token']
             AppLogic.root.wm_geometry("800x600")
             self.next_page.lift()
+            AppLogic.root.wm_geometry("800x600")
 
 
 #register api
