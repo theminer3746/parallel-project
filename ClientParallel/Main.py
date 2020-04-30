@@ -10,11 +10,14 @@ if __name__ == '__main__':
     # initialize all page
     user_page = UserPage(container)
     chat_list_page = ChatListPage(container)
+    chat_page = ChatPage(container)
     user_page.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
     chat_list_page.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+    chat_page.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
-    # set attribute of user_page
+    # set path
     user_page.next_page = chat_list_page
+    chat_list_page.chat_page = chat_page
 
     # set user_page as first page
     user_page.lift()
