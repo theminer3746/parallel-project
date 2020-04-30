@@ -58,6 +58,11 @@ class User extends Model implements
         return $this->hasMany(Message::class);
     }
 
+    public function addUserToChat($chatId, $userId)
+    {
+        $this->find($userId)->push('chat_ids', $chatId);
+    }
+
     /**
      * Generate a JWT token for the user.
      *
