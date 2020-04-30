@@ -74,4 +74,16 @@ class Chat extends Model
     {
         return $this->where('invite_code', $inviteCode)->exists();
     }
+
+    public function getMessagesSinceTime(string $chatId, string $since = null)
+    {
+        $messages = $this->find($chatId)->messages();
+        
+        if(!is_null($since)){
+            $messages = $messages->where('created_at', '>', new \MongoDB\BSON\UTCDateTime($since));
+        }
+
+        return $messages->orderBy('created_at', 'asc')
+            ->get(['_id', 'message', 'user_id', 'created_at']);
+    }
 }

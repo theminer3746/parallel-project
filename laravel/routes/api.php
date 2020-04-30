@@ -24,5 +24,6 @@ Route::group(['middleware' => ['api']], function () {
         Route::post('/', 'ChatController@create');
         Route::post('/join', 'ChatController@join');
         Route::post('/{chat_id}/messages', 'ChatController@newMessage')->middleware('in_chat');
+        Route::get('/{chat_id}/messages', 'ChatController@getMessage')->middleware('in_chat');
     });
 });
