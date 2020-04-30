@@ -25,6 +25,12 @@ class Message extends Model
      */
     protected $appends = ['username'];
 
+    /**
+     * The storage format of the model's date columns.
+     *
+     * @var string
+     */
+    protected $dateFormat = 'Uv';
 
     public function chat()
     {
