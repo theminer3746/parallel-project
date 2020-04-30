@@ -9,9 +9,6 @@ use App\MessageDto;
 
 class Message extends Model
 {
-    private $chat;
-    private $user;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -28,11 +25,6 @@ class Message extends Model
      */
     protected $appends = ['username'];
 
-    public function __construct()
-    {
-        $this->chat = new Chat;
-        $this->user = new User;
-    }
 
     public function chat()
     {
