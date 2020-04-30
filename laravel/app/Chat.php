@@ -53,7 +53,9 @@ class Chat extends Model
 
     public function addUserToChat($chatId, $userId)
     {
-        $this->find($chatId)->push('user_ids', $userId);
+        if (!$this->isUserInChat($chatId, $userId)) {
+            $this->find($chatId)->push('user_ids', $userId);
+        }
     }
 
     public function addUserToChatByInviteCode($inviteCode, $userId)

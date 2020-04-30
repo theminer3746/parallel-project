@@ -60,7 +60,9 @@ class User extends Model implements
 
     public function addUserToChat($chatId, $userId)
     {
-        $this->find($userId)->push('chat_ids', $chatId);
+        if (!$this->isUserInChat($chatId, $userId)) {
+            $this->find($userId)->push('chat_ids', $chatId);
+        }
     }
 
     /**
@@ -91,5 +93,12 @@ class User extends Model implements
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function isUserInChat($chatId, $userId)
+    {
+        return $this->where('_id', $userId)
+            ->where('user_ids', 'all', [$chatId])
+            ->exists();
     }
 }
