@@ -86,4 +86,9 @@ class Chat extends Model
         return $messages->orderBy('created_at', 'asc')
             ->get(['_id', 'message', 'user_id', 'created_at']);
     }
+
+    public function getInviteCodeByChatId($chatId)
+    {
+        return $this->where('_id', $chatId)->value('invite_code');
+    }
 }

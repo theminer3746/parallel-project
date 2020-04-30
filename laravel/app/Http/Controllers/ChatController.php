@@ -66,4 +66,11 @@ class ChatController extends Controller
             'messages' => $this->chat->getMessagesSinceTime($chatId, $request->since),
         ]);
     }
+    
+    public function getInviteCode(Request $request, $chatId)
+    {
+        return response()->json([
+            'invite_code' => $this->chat->getInviteCodeByChatId($chatId),
+        ]);
+    }
 }
