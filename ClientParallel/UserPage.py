@@ -18,6 +18,8 @@ class UserPage(tk.Frame):
         submit_button.grid(row=2, columnspan=2)
         self.next_page = None
         self.user = None
+        register_button = tk.Button(self, text="register", command=self._on_register)
+        register_button.grid(row=2, columnspan=1)
 
     def _on_submit(self):
         print("Login as '"+self.username_entry.get()+"'")
@@ -28,6 +30,11 @@ class UserPage(tk.Frame):
         AppLogic.root.wm_geometry("800x600") # set new display size
 
         self.next_page.lift()
+
+    def _on_register(self):
+        print("Register complete")
+        # self.post_register()
+        self._on_submit()
 
     def get_username(self):
         return self.username_entry.get()
@@ -40,4 +47,15 @@ class UserPage(tk.Frame):
             AppLogic.token = res['token']
             AppLogic.root.wm_geometry("800x600")
             self.next_page.lift()
+
+    def post_register():
+        register_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
+        #response = requests.post(AppLogic.server_ip+'login', data=login_payload)
+        #if response.status_code == 200:
+        #    res = response.json()
+        #    AppLogic.token = res['token']
+        #    AppLogic.root.wm_geometry("800x600")
+        #    self.next_page.lift()
+
+            
 
