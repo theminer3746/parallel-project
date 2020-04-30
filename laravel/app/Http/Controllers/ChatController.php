@@ -62,6 +62,8 @@ class ChatController extends Controller
 
     public function getMessage(Request $request, $chatId)
     {
-        return $this->chat->getMessagesSinceTime($chatId, $request->since);
+        return response()->json([
+            'messages' => $this->chat->getMessagesSinceTime($chatId, $request->since),
+        ]);
     }
 }
