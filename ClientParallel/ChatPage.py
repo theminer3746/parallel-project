@@ -10,7 +10,7 @@ class ChatPage(tk.Frame):
 
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
-        tk.Label(self, text="Chat Test").pack()
+        tk.Label(self, text="Test").pack()
         message_frame = tk.Frame(self)
         scrollbar = tk.Scrollbar(message_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -25,6 +25,7 @@ class ChatPage(tk.Frame):
         self.message_entry = tk.Entry(tail)
         self.message_entry.grid(row=0, column=0)
         tk.Button(tail, text="Send", command=self.send).grid(row=0, column=1)
+        tk.Button(tail, text="Back", command=self.on_click_back).grid(row=1, column=0)
         tail.pack(side="top", fill="both", expand=False)
 
         # initialize socket connection
@@ -32,6 +33,7 @@ class ChatPage(tk.Frame):
         self.socket_thread = threading.Thread(target=self.client_socket)
         self.socket_thread.start()
         self.chats = []
+        self.back_redirect = None
 
     def send(self):
         self.connection.sendall(self.message_entry.get().encode())
@@ -42,4 +44,8 @@ class ChatPage(tk.Frame):
             while True:
                 data = self.connection.recv(1024)
                 self.mylist.insert(tk.END, repr(data))
+
+    def on_click_back(self):
+        if self.back_redirect is not None:
+            self.back_redirect.lift()
 

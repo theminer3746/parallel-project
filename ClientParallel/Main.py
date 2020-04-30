@@ -18,6 +18,7 @@ if __name__ == '__main__':
     # set path
     user_page.next_page = chat_list_page
     chat_list_page.chat_page = chat_page
+    chat_page.back_redirect = chat_list_page
 
     # set user_page as first page
     user_page.lift()
