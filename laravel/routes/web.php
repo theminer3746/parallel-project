@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return response()->json();
+    if(DB::table('health_checks')->insert(['time' => time()])){
+        return response()->json();
+    } else {
+        return response()->json([], 500);
+    }
 });
