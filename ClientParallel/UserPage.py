@@ -20,22 +20,24 @@ class UserPage(tk.Frame):
         self.user = None
 
     def _on_submit(self):
-        login_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
         print("Login as '"+self.username_entry.get()+"'")
         print("Password is '" + self.password_entry.get() + "'")
 
-        '''
-        response = requests.post(AppLogic.server_ip, data=login_payload)
+        # self.post_login()
+
+        AppLogic.root.wm_geometry("800x600") # set new display size
+
+        self.next_page.lift()
+
+    def get_username(self):
+        return self.username_entry.get()
+
+    def post_login(self):
+        login_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
+        response = requests.post(AppLogic.server_ip+'login', data=login_payload)
         if response.status_code == 200:
             res = response.json()
             AppLogic.token = res['token']
             AppLogic.root.wm_geometry("800x600")
             self.next_page.lift()
-        '''
-
-        AppLogic.root.wm_geometry("800x600")
-        self.next_page.lift()
-
-    def get_username(self):
-        return self.username_entry.get()
 

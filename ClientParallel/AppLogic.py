@@ -4,7 +4,10 @@ import tkinter as tk
 class AppLogic:
 
     username = ""
-    all_chat = []
+    chats = {('0', 'Test01'): 'Test'}
     server_ip = ""
     root = tk.Tk()
     token = ""
+    append_file = None
+
+
