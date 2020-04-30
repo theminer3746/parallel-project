@@ -52,6 +52,6 @@ class Message extends Model
 
     public function getUsernameAttribute()
     {
-        return $this->user->find($this->user_id)->username;
+        return $this->user->username;
     }
 }
