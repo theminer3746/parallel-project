@@ -56,6 +56,14 @@ class ChatController extends Controller
         return response()->json();
     }
 
+    public function leave(Request $request, $chatId)
+    {
+        $this->chat->deleteUserFromChat($chatId, auth()->payload()->get('sub'));
+        User::find(auth()->payload()->get('sub'))->deleteUserFromChat($chatId, auth()->payload()->get('sub'));
+
+        return response()->json([], 204);
+    }
+
     public function newMessage(Request $request, $chatId, Message $message)
     {
         $request->validate([

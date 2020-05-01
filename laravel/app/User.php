@@ -65,6 +65,13 @@ class User extends Model implements
         }
     }
 
+    public function deleteUserFromChat($chatId, $userId)
+    {
+        if ($this->isUserInChat($chatId, $userId)) {
+            $this->find($userId)->pull('chat_ids', $chatId);
+        }
+    }
+
     /**
      * Generate a JWT token for the user.
      *
