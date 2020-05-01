@@ -91,4 +91,9 @@ class Chat extends Model
     {
         return $this->where('_id', $chatId)->value('invite_code');
     }
+
+    public function getAllChats($userId)
+    {
+        return $this->where('user_ids', 'all', [$userId])->get();
+    }
 }

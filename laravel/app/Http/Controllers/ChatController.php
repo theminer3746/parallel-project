@@ -75,4 +75,11 @@ class ChatController extends Controller
             'invite_code' => $this->chat->getInviteCodeByChatId($chatId),
         ]);
     }
+
+    public function getAllChats(Request $request)
+    {
+        return response()->json([
+            $this->chat->getAllChats(auth()->payload()->get('sub'))
+        ]);
+    }
 }
