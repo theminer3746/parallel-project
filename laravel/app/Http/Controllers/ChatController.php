@@ -26,6 +26,10 @@ class ChatController extends Controller
 
     public function create(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         try{
             $chatId = $this->chat->createNewChat($request->name);
             $this->chat->addUserToChat($chatId, auth()->payload()->get('sub'));
@@ -42,6 +46,8 @@ class ChatController extends Controller
     public function join(Request $request)
     {
         $this->chat->addUserToChatByInviteCode($request->invite_code, auth()->payload()->get('sub'));
+        $chatId = $this->chat->getChatIdByInviteCode($request->invite_code);
+        User::find(auth()->payload()->get('sub'))->addUserTochat($chatId, auth()->payload()->get('sub'));
 
         return response()->json();
     }
@@ -71,6 +77,13 @@ class ChatController extends Controller
     {
         return response()->json([
             'invite_code' => $this->chat->getInviteCodeByChatId($chatId),
+        ]);
+    }
+
+    public function getAllChats(Request $request)
+    {
+        return response()->json([
+            $this->chat->getAllChats(auth()->payload()->get('sub'))
         ]);
     }
 }
