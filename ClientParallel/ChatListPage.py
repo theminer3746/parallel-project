@@ -49,6 +49,7 @@ class ChatListPage(tk.Frame):
             payload = {'invite_code': self.invite_code_entry.get()}
             response = requests.post(AppLogic.server_ip + "chats/join", payload, auth=AppLogic.auth)
             if response.status_code == 200:
+                self.invite_code_entry.delete(0, 'end')
                 self.fetch_all_chats()
 
     def on_create(self):

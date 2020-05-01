@@ -50,14 +50,12 @@ class UserPage(tk.Frame):
             AppLogic.chats = response.json()[0]
             self.next_page.fetch_all_chats()
             
-    def post_register():
+    def post_register(self):
         register_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
-        #response = requests.post(AppLogic.server_ip+'login', data=login_payload)
-        #if response.status_code == 200:
-        #    res = response.json()
-        #    AppLogic.token = res['token']
-        #    AppLogic.root.wm_geometry("800x600")
-        #    self.next_page.lift()
+        response = requests.post(AppLogic.server_ip+'users', data=register_payload)
+        if response.status_code == 201:
+            self.username_entry.delete(0, 'end')
+            self.password_entry.delete(0, 'end')
 
             
 

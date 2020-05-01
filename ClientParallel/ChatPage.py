@@ -3,6 +3,7 @@ from AppLogic import AppLogic
 import threading
 import requests
 import time
+import datetime
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65432  # The port used by the server
@@ -46,7 +47,7 @@ class ChatPage(tk.Frame):
                                  payload,
                                  auth=AppLogic.auth)
         if response.status_code == 201:
-            pass
+            self.message_entry.delete(0, 'end')
 
     def poll_thread_func(self):
         while AppLogic.run:
@@ -71,5 +72,5 @@ class ChatPage(tk.Frame):
             if len(messages) > 0:
                 self.since = messages[-1]['created_at']
             for m in messages:
-                self.mlist.insert(tk.END, m['username']+'('+m['created_at']+'): '+m['message'])
+                self.mlist.insert(tk.END, m['username']+'('+str(datetime.datetime.fromtimestamp(int(m['created_at'])//1000))+'): '+m['message'])
 
