@@ -1,7 +1,7 @@
 import tkinter as tk
 import requests
 from AppLogic import AppLogic, HTTPBearerAuth
-
+import requests
 
 class CreatePage(tk.Frame):
 
@@ -16,6 +16,7 @@ class CreatePage(tk.Frame):
 
     def redirect(self):
         if self.redirect_page is not None:
+            self.redirect_page.fetch_all_chats()
             AppLogic.root.wm_geometry("800x600")
             self.redirect_page.lift()
 

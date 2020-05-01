@@ -2,6 +2,7 @@ import tkinter as tk
 from AppLogic import AppLogic
 import threading
 import requests
+import time
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 65432  # The port used by the server
@@ -28,33 +29,34 @@ class ChatPage(tk.Frame):
         tk.Button(tail, text="Back", command=self.on_click_back).grid(row=1, column=0)
         tail.pack(side="top", fill="both", expand=False)
 
+        self.index = 0
+        self.since = None
+        self.is_lifted = False
+
         # initialize socket connection
         self.connection = None
-        # self.socket_thread = threading.Thread(target=self.client_socket)
-        # self.socket_thread.start()
+        self.poll_thread = threading.Thread(target=self.poll_thread_func)
+        self.poll_thread.start()
         self.chats = []
         self.back_redirect = None
 
-        self.index = 0
-        self.since = None
-
     def send(self):
         payload = {'message': self.message_entry.get()}
-        print(payload)
         response = requests.post(AppLogic.server_ip + 'chats/' + AppLogic.chats[self.index]['_id'] + '/messages',
                                  payload,
                                  auth=AppLogic.auth)
-        print(response.status_code)
         if response.status_code == 201:
-            self.fetch_message()
+            pass
 
-
-
-    def client_socket(self):
-        pass
+    def poll_thread_func(self):
+        while True:
+            time.sleep(1)
+            if self.is_lifted:
+                self.fetch_message()
 
     def on_click_back(self):
         if self.back_redirect is not None:
+            self.is_lifted = False
             self.back_redirect.lift()
 
     def fetch_message(self):
@@ -63,7 +65,7 @@ class ChatPage(tk.Frame):
         else:
             payload = {'since': self.since}
 
-        response = requests.get(AppLogic.server_ip+'chats/'+AppLogic.chats[self.index]['_id']+'/messages', data=payload, auth=AppLogic.auth)
+        response = requests.get(AppLogic.server_ip+'chats/'+AppLogic.chats[self.index]['_id']+'/messages', payload, auth=AppLogic.auth)
         if response.status_code == 200:
             messages = response.json()['messages']
             if len(messages) > 0:

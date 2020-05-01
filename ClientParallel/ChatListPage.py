@@ -12,22 +12,22 @@ class ChatListPage(tk.Frame):
 
         container = tk.Frame(self, width=800, height=500)
 
-        canvas = tk.Canvas(container)
-        scroll_y = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        self.canvas = tk.Canvas(container)
+        scroll_y = tk.Scrollbar(container, orient="vertical", command=self.canvas.yview)
 
-        self.rooms_frame = tk.Frame(canvas)
+        self.rooms_frame = tk.Frame(self.canvas)
 
         # put the frame in the canvas
-        canvas.create_window(0, 0, anchor='nw', window=self.rooms_frame)
+        self.canvas.create_window(0, 0, anchor='nw', window=self.rooms_frame)
         # make sure everything is displayed before configuring the scrollregion
-        canvas.update_idletasks()
+        self.canvas.update_idletasks()
 
-        canvas.configure(scrollregion=canvas.bbox('all'),
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'),
                          yscrollcommand=scroll_y.set,
                          width=780,
                          height=500)
 
-        canvas.pack(fill='both', expand=True, side='left')
+        self.canvas.pack(fill='both', expand=True, side='left')
         scroll_y.pack(fill='y', side='right')
         
         container.pack()
@@ -47,7 +47,8 @@ class ChatListPage(tk.Frame):
         if self.invite_code_entry.get() != "":
             payload = {'invite_code': self.invite_code_entry.get()}
             response = requests.post(AppLogic.server_ip + "chats/join", payload, auth=AppLogic.auth)
-            print(response.status_code)
+            if response.status_code == 200:
+                self.fetch_all_chats()
 
     def post_leave(self):
         #TODO
@@ -59,10 +60,13 @@ class ChatListPage(tk.Frame):
             self.create_page.lift()
 
     def on_click_chat(self, button):
+        AppLogic.chat_pages[self.chat_buttons[button]].is_lifted = True
         AppLogic.chat_pages[self.chat_buttons[button]].lift()
 
     def fetch_all_chats(self):
         count = 0
+        self.clear()
+        self.get_chats()
         for room in AppLogic.chats:
 
             AppLogic.chat_pages.append(self.create_chat_page(count))
@@ -76,6 +80,8 @@ class ChatListPage(tk.Frame):
             tk.Button(room_frame, text="Leave").grid(row=1, column=1)
             room_frame.pack(side="top", fill="both", expand=False)
             count = count + 1
+            
+        self.lift()
 
     def create_chat_page(self, index):
         chat_page = ChatPage(AppLogic.container)
@@ -91,3 +97,18 @@ class ChatListPage(tk.Frame):
         button.grid(row=0, column=1)
         return button
 
+    def clear(self):
+        for page in AppLogic.chat_pages:
+            page.destroy()
+        AppLogic.chat_pages = []
+        self.rooms_frame.destroy()
+        self.rooms_frame = tk.Frame(self.canvas)
+        self.canvas.create_window(0, 0, anchor='nw', window=self.rooms_frame)
+
+    def get_chats(self):
+        response = requests.get(AppLogic.server_ip+'chats', auth=AppLogic.auth)
+        if response.status_code == 200:
+            AppLogic.chats = response.json()[0]
+
+    def on_leave(self):
+        

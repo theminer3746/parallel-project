@@ -27,7 +27,7 @@ class UserPage(tk.Frame):
 
     def _on_register(self):
         print("Register complete")
-        # self.post_register()
+        self.post_register()
         self._on_submit()
 
     def get_username(self):
