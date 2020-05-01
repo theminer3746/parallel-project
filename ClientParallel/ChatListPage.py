@@ -2,6 +2,7 @@ import tkinter as tk
 import requests
 from AppLogic import AppLogic
 
+
 class ChatListPage(tk.Frame):
     
     def __init__(self, *args, **kwargs):
@@ -23,20 +24,29 @@ class ChatListPage(tk.Frame):
         rooms_frame.pack(side="top", fill="both", expand=False)
 
         joining_frame = tk.Frame(self)
-        tk.Label(joining_frame, text="id: ").grid(row=0, column=0)
-        self.id_join_entry = tk.Entry(joining_frame)
-        self.id_join_entry.grid(row=0, column=1)
-        tk.Button(joining_frame, text="Join").grid(row=0, column=2)
+        tk.Label(joining_frame, text="Invite Code: ").grid(row=0, column=0)
+        self.invite_code_entry = tk.Entry(joining_frame)
+        self.invite_code_entry.grid(row=0, column=1)
+        tk.Button(joining_frame, text="Join", command=self.post_join).grid(row=0, column=2)
+        tk.Button(joining_frame, text="Create Room", command=self.on_create).grid(row=0, column=3)
         self.chat_page = None
+        self.create_page = None
         joining_frame.pack()
 
-    def post_update(self):
-        # TODO
-        pass
+    def post_join(self):
+        if self.invite_code_entry.get() != "":
+            payload = {'invite_code': self.invite_code_entry.get()}
+            response = requests.post(AppLogic.server_ip + "chats/join", payload, auth=AppLogic.auth)
+            print(response.status_code)
 
     def post_leave(self):
         #TODO
         pass
+
+    def on_create(self):
+        if self.create_page is not None:
+            AppLogic.root.wm_geometry("270x50")
+            self.create_page.lift()
 
     def on_click_chat(self, room):
         AppLogic.current_room = room

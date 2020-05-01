@@ -39,6 +39,7 @@ class UserPage(tk.Frame):
         if response.status_code == 200:
             res = response.json()
             AppLogic.token = res['access_token']
+            AppLogic.setup_auth()
             AppLogic.root.wm_geometry("800x600")
             self.next_page.lift()
 
