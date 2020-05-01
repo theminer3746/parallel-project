@@ -1,0 +1,68 @@
+version: "3.2"
+services:
+
+  php1:
+    build: ./laravel
+
+  php2:
+    build: ./laravel
+    # working_dir: /var/www/laravel
+    # volumes:
+    #   - ./:/var/www/laravel
+
+  nginx:
+    build: ./nginx
+    working_dir: /var/www/laravel
+    ports:
+      - 80:80
+    depends_on: 
+      - php1
+      - php2
+
+  mongo:
+    image: "mongo:4.0"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+      - MONGO_INITDB_DATABASE=parallel
+      - DB_USERNAME=parallel
+      - DB_PASSWORD=parallel
+    volumes:
+      - ./mongo-init/:/docker-entrypoint-initdb.d/
+      # - type: volume
+      #   source: mongodb_data_volume
+      #   target: /data/db
+    ports:
+      - 27017:27017
+    restart: always
+  # database:
+  #   image: mysql:5.7
+  #   volumes:
+  #     - ./mysql/data:/var/lib/mysql
+  #   environment:
+  #     - MYSQL_DATABASE=laravel
+  #     - MYSQL_USER=user
+  #     - MYSQL_PASSWORD=password
+  #     - MYSQL_ROOT_PASSWORD=root
+  #   ports:
+  #     - "3306:3306"
+  # composer:
+  #   build: ./docker-php
+  #   working_dir: /var/www/laravel
+  #   volumes_from:
+  #     - php
+  #   command: "composer install"
+  # myadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: phpmyadmin
+  #   ports:
+  #     - 8890:80
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #     - PMA_HOST=database
+  #   restart: always
+  #   depends_on:
+  #     - database
+volumes:
+  mongodb_data_volume:
+    external: false

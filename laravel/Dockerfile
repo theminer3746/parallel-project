@@ -40,17 +40,17 @@ RUN curl -sS https://getcomposer.org/installer | \
 
 WORKDIR /usr/src/laravel
 
-COPY laravel/composer.* /usr/src/laravel/
+COPY composer.* /usr/src/laravel/
 
 RUN composer install --no-autoloader
 
-COPY laravel/.env.docker laravel/.env
+COPY .env.docker .env
 
-COPY laravel/ /usr/src/laravel/
+COPY . /usr/src/laravel/
 
 RUN composer dump-autoload
 
 RUN php artisan key:generate && \
     php artisan jwt:secret
 
-RUN ls
+RUN chmod -R 777 .
