@@ -98,7 +98,7 @@ class User extends Model implements
     public function isUserInChat($chatId, $userId)
     {
         return $this->where('_id', $userId)
-            ->where('user_ids', 'all', [$chatId])
+            ->where('chat_ids', 'all', [$chatId])
             ->exists();
     }
 }
