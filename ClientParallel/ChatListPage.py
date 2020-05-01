@@ -8,9 +8,15 @@ class ChatListPage(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
         tk.Label(self, text="All Available Chat").pack()
-        
-        rooms_frame = tk.Frame(self)
+
+        container = tk.Frame(self, width=800, height=500)
+
+        canvas = tk.Canvas(container)
+        scroll_y = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+
+        rooms_frame = tk.Frame(canvas)
         count = 0
+
         for room in AppLogic.chats.keys():
             room_frame = tk.Frame(rooms_frame)
             room_frame.grid_columnconfigure(0, weight=1) # help me config the weight
@@ -21,7 +27,20 @@ class ChatListPage(tk.Frame):
             tk.Button(room_frame, text="Leave").grid(row=1, column=1)
             room_frame.pack(side="top", fill="both", expand=False)
             count = count + 1
-        rooms_frame.pack(side="top", fill="both", expand=False)
+        # put the frame in the canvas
+        canvas.create_window(0, 0, anchor='nw', window=rooms_frame)
+        # make sure everything is displayed before configuring the scrollregion
+        canvas.update_idletasks()
+
+        canvas.configure(scrollregion=canvas.bbox('all'),
+                         yscrollcommand=scroll_y.set,
+                         width=780,
+                         height=500)
+
+        canvas.pack(fill='both', expand=True, side='left')
+        scroll_y.pack(fill='y', side='right')
+        
+        container.pack()
 
         joining_frame = tk.Frame(self)
         tk.Label(joining_frame, text="Invite Code: ").grid(row=0, column=0)
