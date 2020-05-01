@@ -68,10 +68,9 @@ class ChatController extends Controller
     {
         $request->validate([
             'message' => 'required',
-            'user_id' => 'required',
         ]);
 
-        $messageDto = new \App\MessageDto($request->message, $request->user_id);
+        $messageDto = new \App\MessageDto($request->message, auth()->payload()->get('sub'));
 
         $message->newMessage($chatId, $messageDto);
 
