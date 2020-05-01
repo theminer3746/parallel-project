@@ -42,6 +42,7 @@ class ChatListPage(tk.Frame):
         self.create_page = None
         joining_frame.pack()
         self.chat_buttons = {}
+        self.leave_buttons = {}
 
     def post_join(self):
         if self.invite_code_entry.get() != "":
@@ -49,10 +50,6 @@ class ChatListPage(tk.Frame):
             response = requests.post(AppLogic.server_ip + "chats/join", payload, auth=AppLogic.auth)
             if response.status_code == 200:
                 self.fetch_all_chats()
-
-    def post_leave(self):
-        #TODO
-        pass
 
     def on_create(self):
         if self.create_page is not None:
@@ -70,14 +67,16 @@ class ChatListPage(tk.Frame):
         for room in AppLogic.chats:
 
             AppLogic.chat_pages.append(self.create_chat_page(count))
-
             room_frame = tk.Frame(self.rooms_frame)
             room_frame.grid_columnconfigure(0, weight=1)  # help me config the weight
             room_frame.grid_rowconfigure(0, weight=1)
-            tk.Label(room_frame, text=room['name']).grid(row=0, column=0)
-            tk.Label(room_frame, text="Invite Code: " + room['invite_code']).grid(row=1, column=0)
-            self.chat_buttons[self.create_button(room_frame)] = count
-            tk.Button(room_frame, text="Leave").grid(row=1, column=1)
+            if count == 0:
+                tk.Label(room_frame, text="-------------------------------------------------------------------------------------------------------------------------------------------------").grid(row=0)
+            tk.Label(room_frame, text=room['name']).grid(row=1, column=0)
+            tk.Label(room_frame, text="Invite Code: " + room['invite_code']).grid(row=2, column=0)
+            self.chat_buttons[self.create_chat_button(room_frame)] = count
+            self.leave_buttons[self.create_leave_button(room_frame)] = count
+            tk.Label(room_frame, text="-------------------------------------------------------------------------------------------------------------------------------------------------").grid(row=3)
             room_frame.pack(side="top", fill="both", expand=False)
             count = count + 1
             
@@ -91,11 +90,18 @@ class ChatListPage(tk.Frame):
         chat_page.fetch_message()
         return chat_page
 
-    def create_button(self, room_frame):
+    def create_chat_button(self, room_frame):
         button = tk.Button(room_frame, text="Chat")
         button.configure(command=lambda: self.on_click_chat(button))
-        button.grid(row=0, column=1)
+        button.grid(row=1, column=1)
         return button
+
+    def create_leave_button(self, room_frame):
+        button = tk.Button(room_frame, text="Leave")
+        button.configure(command=lambda: self.on_leave(button))
+        button.grid(row=2, column=1)
+        return button
+
 
     def clear(self):
         for page in AppLogic.chat_pages:
@@ -110,5 +116,9 @@ class ChatListPage(tk.Frame):
         if response.status_code == 200:
             AppLogic.chats = response.json()[0]
 
-    def on_leave(self):
-        
+    def on_leave(self, button):
+        index = self.leave_buttons[button]
+        response = requests.delete(AppLogic.server_ip+'chats/'+AppLogic.chats[index]['_id'], auth=AppLogic.auth)
+        print(response.status_code)
+        if response.status_code == 204:
+            self.fetch_all_chats()

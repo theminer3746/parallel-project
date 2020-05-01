@@ -11,7 +11,7 @@ class ChatPage(tk.Frame):
 
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
-        tk.Label(self, text="Test").pack()
+        self.header = tk.Label(self, text="Test").pack()
         message_frame = tk.Frame(self)
         scrollbar = tk.Scrollbar(message_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -49,7 +49,7 @@ class ChatPage(tk.Frame):
             pass
 
     def poll_thread_func(self):
-        while True:
+        while AppLogic.run:
             time.sleep(1)
             if self.is_lifted:
                 self.fetch_message()
