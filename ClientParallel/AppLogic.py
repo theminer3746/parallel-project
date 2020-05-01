@@ -8,6 +8,7 @@ class AppLogic:
     chats = {('0', 'Test01'): 'Test01', ('1', 'Test02'): 'Test02'}
     server_ip = "http://127.0.0.1:8000/api/"
     root = tk.Tk()
+    rooms_frame = None
     token = ""
     auth = None
     append_file = None
@@ -17,6 +18,7 @@ class AppLogic:
     @staticmethod
     def setup_auth():
         AppLogic.auth = HTTPBearerAuth(AppLogic.token)
+
 
 
 class HTTPBearerAuth(requests.auth.AuthBase):

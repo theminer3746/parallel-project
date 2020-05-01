@@ -14,21 +14,10 @@ class ChatListPage(tk.Frame):
         canvas = tk.Canvas(container)
         scroll_y = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
 
-        rooms_frame = tk.Frame(canvas)
-        count = 0
+        self.rooms_frame = tk.Frame(canvas)
 
-        for room in AppLogic.chats.keys():
-            room_frame = tk.Frame(rooms_frame)
-            room_frame.grid_columnconfigure(0, weight=1) # help me config the weight
-            room_frame.grid_rowconfigure(0, weight=1)
-            tk.Label(room_frame, text=room[1]).grid(row=0, column=0)
-            tk.Label(room_frame, text="ID: "+room[0]).grid(row=1, column=0)
-            tk.Button(room_frame, text="Chat", command=lambda: self.on_click_chat(room)).grid(row=0, column=1)
-            tk.Button(room_frame, text="Leave").grid(row=1, column=1)
-            room_frame.pack(side="top", fill="both", expand=False)
-            count = count + 1
         # put the frame in the canvas
-        canvas.create_window(0, 0, anchor='nw', window=rooms_frame)
+        canvas.create_window(0, 0, anchor='nw', window=self.rooms_frame)
         # make sure everything is displayed before configuring the scrollregion
         canvas.update_idletasks()
 
@@ -69,5 +58,17 @@ class ChatListPage(tk.Frame):
 
     def on_click_chat(self, room):
         AppLogic.current_room = room
-        AppLogic.current_chats = AppLogic.chats[room]
         self.chat_page.lift()
+
+    def fetch_all_chats(self):
+        count = 0
+        for room in AppLogic.chats:
+            room_frame = tk.Frame(self.rooms_frame)
+            room_frame.grid_columnconfigure(0, weight=1)  # help me config the weight
+            room_frame.grid_rowconfigure(0, weight=1)
+            tk.Label(room_frame, text=room['name']).grid(row=0, column=0)
+            tk.Label(room_frame, text="Invite Code: " + room['invite_code']).grid(row=1, column=0)
+            tk.Button(room_frame, text="Chat", command=lambda: self.on_click_chat(count)).grid(row=0, column=1)
+            tk.Button(room_frame, text="Leave").grid(row=1, column=1)
+            room_frame.pack(side="top", fill="both", expand=False)
+            count = count + 1

@@ -41,8 +41,14 @@ class UserPage(tk.Frame):
             AppLogic.token = res['access_token']
             AppLogic.setup_auth()
             AppLogic.root.wm_geometry("800x600")
+            self.get_chats()
             self.next_page.lift()
 
+    def get_chats(self):
+        response = requests.get(AppLogic.server_ip+'chats', auth=AppLogic.auth)
+        if response.status_code == 200:
+            AppLogic.chats = response.json()[0]
+            self.next_page.fetch_all_chats()
 
 #register api
     def post_register():
