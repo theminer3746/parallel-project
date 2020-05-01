@@ -12,6 +12,9 @@ RUN apt-get update \
    libzip-dev \
    openssh-server \
    openssh-client \
+   libcurl4-openssl-dev \
+   pkg-config \
+   libssl-dev \
    rsync \
    zlib1g-dev \
    zip unzip
