@@ -45,6 +45,10 @@ class ChatController extends Controller
 
     public function join(Request $request)
     {
+        $request->validate([
+            'invite_code' => 'required',
+        ]);
+
         $this->chat->addUserToChatByInviteCode($request->invite_code, auth()->payload()->get('sub'));
         $chatId = $this->chat->getChatIdByInviteCode($request->invite_code);
         User::find(auth()->payload()->get('sub'))->addUserTochat($chatId, auth()->payload()->get('sub'));
