@@ -26,6 +26,10 @@ class ChatController extends Controller
 
     public function create(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         try{
             $chatId = $this->chat->createNewChat($request->name);
             $this->chat->addUserToChat($chatId, auth()->payload()->get('sub'));
