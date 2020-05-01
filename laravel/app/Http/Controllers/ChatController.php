@@ -45,6 +45,10 @@ class ChatController extends Controller
 
     public function join(Request $request)
     {
+        $request->validate([
+            'invite_code' => 'required',
+        ]);
+
         $this->chat->addUserToChatByInviteCode($request->invite_code, auth()->payload()->get('sub'));
         $chatId = $this->chat->getChatIdByInviteCode($request->invite_code);
         User::find(auth()->payload()->get('sub'))->addUserTochat($chatId, auth()->payload()->get('sub'));
@@ -52,14 +56,21 @@ class ChatController extends Controller
         return response()->json();
     }
 
+    public function leave(Request $request, $chatId)
+    {
+        $this->chat->deleteUserFromChat($chatId, auth()->payload()->get('sub'));
+        User::find(auth()->payload()->get('sub'))->deleteUserFromChat($chatId, auth()->payload()->get('sub'));
+
+        return response()->json([], 204);
+    }
+
     public function newMessage(Request $request, $chatId, Message $message)
     {
         $request->validate([
             'message' => 'required',
-            'user_id' => 'required',
         ]);
 
-        $messageDto = new \App\MessageDto($request->message, $request->user_id);
+        $messageDto = new \App\MessageDto($request->message, auth()->payload()->get('sub'));
 
         $message->newMessage($chatId, $messageDto);
 

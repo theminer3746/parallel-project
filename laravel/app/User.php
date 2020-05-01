@@ -65,6 +65,13 @@ class User extends Model implements
         }
     }
 
+    public function deleteUserFromChat($chatId, $userId)
+    {
+        if ($this->isUserInChat($chatId, $userId)) {
+            $this->find($userId)->pull('chat_ids', $chatId);
+        }
+    }
+
     /**
      * Generate a JWT token for the user.
      *
@@ -98,7 +105,7 @@ class User extends Model implements
     public function isUserInChat($chatId, $userId)
     {
         return $this->where('_id', $userId)
-            ->where('user_ids', 'all', [$chatId])
+            ->where('chat_ids', 'all', [$chatId])
             ->exists();
     }
 }

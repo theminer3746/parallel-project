@@ -58,6 +58,13 @@ class Chat extends Model
         }
     }
 
+    public function deleteUserFromChat($chatId, $userId)
+    {
+        if ($this->isUserInChat($chatId, $userId)) {
+            $this->find($chatId)->pull('user_ids', $userId);
+        }
+    }
+
     public function addUserToChatByInviteCode($inviteCode, $userId)
     {
         $this->addUserToChat($this->getChatIdByInviteCode($inviteCode), $userId);
