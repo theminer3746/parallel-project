@@ -9,7 +9,7 @@ class UserPage(tk.Frame):
         tk.Frame.__init__(self, *args, **kwargs)
         AppLogic.root.wm_geometry("200x70")
         self.username_entry = tk.Entry(self)
-        self.password_entry = tk.Entry(self)
+        self.password_entry = tk.Entry(self, show="*")
         submit_button = tk.Button(self, text="submit", command=self._on_submit)
         tk.Label(self, text="username: ").grid(row=0, sticky=tk.W)
         self.username_entry.grid(row=0, column=1)
