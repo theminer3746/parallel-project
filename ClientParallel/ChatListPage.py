@@ -1,6 +1,7 @@
 import tkinter as tk
 import requests
 from AppLogic import AppLogic
+from ChatPage import ChatPage
 
 
 class ChatListPage(tk.Frame):
@@ -40,6 +41,7 @@ class ChatListPage(tk.Frame):
         self.chat_page = None
         self.create_page = None
         joining_frame.pack()
+        self.chat_buttons = {}
 
     def post_join(self):
         if self.invite_code_entry.get() != "":
@@ -56,19 +58,36 @@ class ChatListPage(tk.Frame):
             AppLogic.root.wm_geometry("270x50")
             self.create_page.lift()
 
-    def on_click_chat(self, room):
-        AppLogic.current_room = room
-        self.chat_page.lift()
+    def on_click_chat(self, button):
+        AppLogic.chat_pages[self.chat_buttons[button]].lift()
 
     def fetch_all_chats(self):
         count = 0
         for room in AppLogic.chats:
+
+            AppLogic.chat_pages.append(self.create_chat_page(count))
+
             room_frame = tk.Frame(self.rooms_frame)
             room_frame.grid_columnconfigure(0, weight=1)  # help me config the weight
             room_frame.grid_rowconfigure(0, weight=1)
             tk.Label(room_frame, text=room['name']).grid(row=0, column=0)
             tk.Label(room_frame, text="Invite Code: " + room['invite_code']).grid(row=1, column=0)
-            tk.Button(room_frame, text="Chat", command=lambda: self.on_click_chat(count)).grid(row=0, column=1)
+            self.chat_buttons[self.create_button(room_frame)] = count
             tk.Button(room_frame, text="Leave").grid(row=1, column=1)
             room_frame.pack(side="top", fill="both", expand=False)
             count = count + 1
+
+    def create_chat_page(self, index):
+        chat_page = ChatPage(AppLogic.container)
+        chat_page.index = index
+        chat_page.place(in_=AppLogic.container, x=0, y=0, relwidth=1, relheight=1)
+        chat_page.back_redirect = self
+        chat_page.fetch_message()
+        return chat_page
+
+    def create_button(self, room_frame):
+        button = tk.Button(room_frame, text="Chat")
+        button.configure(command=lambda: self.on_click_chat(button))
+        button.grid(row=0, column=1)
+        return button
+
