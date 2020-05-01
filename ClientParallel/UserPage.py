@@ -9,7 +9,7 @@ class UserPage(tk.Frame):
         tk.Frame.__init__(self, *args, **kwargs)
         AppLogic.root.wm_geometry("200x70")
         self.username_entry = tk.Entry(self)
-        self.password_entry = tk.Entry(self)
+        self.password_entry = tk.Entry(self, show="*")
         submit_button = tk.Button(self, text="submit", command=self._on_submit)
         tk.Label(self, text="username: ").grid(row=0, sticky=tk.W)
         self.username_entry.grid(row=0, column=1)
@@ -22,18 +22,12 @@ class UserPage(tk.Frame):
         register_button.grid(row=2, columnspan=1)
 
     def _on_submit(self):
-        print("Login as '"+self.username_entry.get()+"'")
-        print("Password is '" + self.password_entry.get() + "'")
-
-        # self.post_login()
-
-        AppLogic.root.wm_geometry("800x600") # set new display size
-
-        self.next_page.lift()
+          # set new display size
+        self.post_login()
 
     def _on_register(self):
         print("Register complete")
-        # self.post_register()
+        self.post_register()
         self._on_submit()
 
     def get_username(self):
@@ -41,23 +35,27 @@ class UserPage(tk.Frame):
 
     def post_login(self):
         login_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
-        response = requests.post(AppLogic.server_ip+'login', data=login_payload)
+        response = requests.post(AppLogic.server_ip+'auth/login', data=login_payload)
         if response.status_code == 200:
             res = response.json()
-            AppLogic.token = res['token']
+            AppLogic.token = res['access_token']
+            AppLogic.setup_auth()
             AppLogic.root.wm_geometry("800x600")
+            self.get_chats()
             self.next_page.lift()
 
-
-#register api
-    def post_register():
+    def get_chats(self):
+        response = requests.get(AppLogic.server_ip+'chats', auth=AppLogic.auth)
+        if response.status_code == 200:
+            AppLogic.chats = response.json()[0]
+            self.next_page.fetch_all_chats()
+            
+    def post_register(self):
         register_payload = {'username': self.username_entry.get(), "password": self.password_entry.get()}
-        #response = requests.post(AppLogic.server_ip+'login', data=login_payload)
-        #if response.status_code == 200:
-        #    res = response.json()
-        #    AppLogic.token = res['token']
-        #    AppLogic.root.wm_geometry("800x600")
-        #    self.next_page.lift()
+        response = requests.post(AppLogic.server_ip+'users', data=register_payload)
+        if response.status_code == 201:
+            self.username_entry.delete(0, 'end')
+            self.password_entry.delete(0, 'end')
 
             
 
